@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend API for bookstore management system (TFF project)",
+  "license": "ISC",
+  "author": "Pietro Carlini",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node --watch --env-file=.env app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "argon2": "^0.45.1",
+    "express": "^5.2.1",
+    "express-jsdoc-swagger": "^1.8.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.8",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.5.4"
+  },
+  "allowScripts": {
+    "argon2@0.45.1": true
+  }
+}
