@@ -1,3 +1,5 @@
+//? It defines the rules for input data (form, format, required fields).
+
 const z = require('zod');
 
 const authUserValidator = z.object({

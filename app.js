@@ -22,13 +22,17 @@ db.sequelize.authenticate()
     });
 
 //----DB SYNCH---- //! Commented after use
-db.sequelize.sync()
-    .catch(err => console.log(err))
+// db.sequelize.sync()
+//     .catch(err => console.log(err))
 
 //db.sequelize.sync({force : true}) //? ⚠️ to delete and redo DB
 
 //---- JSON ----
 app.use(express.json());
+
+//---- ROUTES ----
+const router = require('./routes')
+app.use('/api', router);
 
 //Healtcheck 
 app.get('/api/health', (req,res) => res.json({status: 'ok'}))
