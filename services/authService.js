@@ -41,6 +41,20 @@ const authService = {
         catch (err) {
             throw new Error(err.message)
         }
+    },
+
+    getByEmail: async (email) => {
+        try {
+            const userFound = await db.User.findOne({ 
+                where: {email},
+                include: db.Client //To retrieve the connected client (so you can access the data)
+                //?This works because it's defined the User.hasOne(Client, ...) association in models/config.js => Sequelize uses that relationship to JOIN behind the scenes
+            });
+            return userFound;
+        }
+        catch(err){
+            throw new Error(err.message)
+        }
     }
 }
 
