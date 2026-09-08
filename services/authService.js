@@ -1,5 +1,6 @@
 //?Layer that communicates with the database via the Models: it contains the functions `authEmailCheck(email)`(checks whether the email already exists) and `register(userData)`(creates the User and Client records in the database). It never receives requests, only raw data.
 
+const { where } = require('sequelize');
 const db = require('../models/config')
 
 const authService = {
@@ -45,14 +46,26 @@ const authService = {
 
     getByEmail: async (email) => {
         try {
-            const userFound = await db.User.findOne({ 
-                where: {email},
+            const userFound = await db.User.findOne({
+                where: { email },
                 include: db.Client //To retrieve the connected client (so you can access the data)
                 //?This works because it's defined the User.hasOne(Client, ...) association in models/config.js => Sequelize uses that relationship to JOIN behind the scenes
             });
             return userFound;
         }
-        catch(err){
+        catch (err) {
+            throw new Error(err.message)
+        }
+    },
+
+    getById: async (id) => {
+        try {
+            const userFound = await db.User.findByPk(id, {
+                include: db.Client
+            });
+            return userFound
+        }
+        catch (err) {
             throw new Error(err.message)
         }
     }

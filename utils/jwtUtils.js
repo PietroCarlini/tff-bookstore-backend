@@ -31,6 +31,36 @@ const jwtUtils = {
             })
         })
     },
+
+    decode: (token) => {
+        return new Promise ( (resolve, reject) => {
+            //* 1) Verify token content
+            if(!token){
+                reject(new Error('Missing token to authentification'));
+            }
+            //* 2) Setting options
+            const options = {
+                audience: JWT_AUDIENCE,
+                issuer: JWT_ISSUER 
+            }
+            //* 3) Decoding token using 'verify' method that has params:- token - secret - options - callback to see if we were able to decode
+            jwt.verify(token, JWT_SECRET, options, (error, payload) => {
+                if (error) {
+                    reject(error)
+                }
+                else{
+                    resolve(payload) //decoding succesfull, it sends back payload from token***
+                }
+            })
+        })
+    }
+    
 }
 
 module.exports = jwtUtils;
+
+// *** this means:
+// jwt.verify() checks the token's validity (signature, expiration, audience/issuer)
+// AND returns the payload stored at creation (id, role, iat, exp) if valid.
+// This lets the backend know WHO is making the request without querying the DB (stateless auth) —
+// the payload gets saved in req.user by the middleware, for controllers to use later

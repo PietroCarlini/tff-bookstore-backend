@@ -62,10 +62,26 @@ const authController = {
         catch (err) {
             res.status(500).json({ status: 500, message: 'A server error has occured' })
             console.log(err);
-            
+
+        }
+    },
+
+    me: async (req, res) => {
+        try {
+            //From AuthentificationMidd: req.user contains payload (user data)
+            const { id } = req.user;
+            const userFound = await authService.getById(id);
+            if (!userFound) {
+                return res.status(404).json({ status: 404, message: 'User not found' });
+            }
+            //hiding password
+            const { password, ...userNoPW } = userFound.toJSON();
+            res.status(200).json(userNoPW);
+        }
+        catch (err) {
+            res.status(500).json({ status: 500, message: 'A server error has occured' });
         }
     }
-
 }
 
 
