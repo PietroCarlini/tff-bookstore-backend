@@ -2,7 +2,8 @@ const bodyValidator = require('../middlewares/bodyValidatorMiddleware');
 const authUserValidator = require('../validators/auth/authUserValidator');
 const authController = require('../controllers/authController')
 const authLoginValidator = require('../validators/auth/authLoginValidator')
-const authentification = require('../middlewares/auth/authentifictionMiddleware')
+const authentification = require('../middlewares/auth/authentificationMiddleware')
+const roleAuthorization = require('../middlewares/auth/roleAuthMiddleware')
 
 const authRouter = require('express').Router();
 
@@ -19,6 +20,13 @@ authRouter.post('/login',
 authRouter.get('/me',
     authentification(),
     authController.me
+)
+
+//NB: test route for 'roleAuthorization' Admin
+authRouter.get('/admin/only',
+    authentification(),
+    roleAuthorization(['Admin']),
+    (req,res) => res.status(200).json({ status: 200, message: 'Welcome Admin'})
 )
 
 module.exports = authRouter

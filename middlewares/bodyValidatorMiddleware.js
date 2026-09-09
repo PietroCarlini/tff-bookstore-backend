@@ -1,6 +1,6 @@
 //MIDDLEWARE to check BODY with ZOD
 //? It takes a validator and applies it to the request body, intercepting it before it reaches the controller.
-//? => This middw receives"schema" as a parameter, based on which it must check the body 
+//? => This middw receives "schema" as a parameter, based on which it must check the body 
 //! NB: to use ONLY on route wth POST, PUT, and PATCH
 
 const bodyValidator = (schema) => {
@@ -8,7 +8,7 @@ const bodyValidator = (schema) => {
     return (req, res, next) => {
         //body validation due to schema
         const result = schema.safeParse(req.body);
-        //* “result” contains a 'success' property with a Boolean value and a 'data' property containing the data passed by the validator   
+        //* "result" contains a 'success' property with a Boolean value and a 'data' property containing the data passed by the validator   
         const {success, data, error} = result; 
         if(success){
             //body ok
