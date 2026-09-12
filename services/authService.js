@@ -25,6 +25,7 @@ const authService = {
             return { user, client }
         }
         catch (err) {
+            //if ther's an error we canceld and rollback
             await t.rollback();
             throw new Error(err.message)
         }

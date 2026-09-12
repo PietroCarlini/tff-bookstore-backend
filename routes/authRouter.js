@@ -4,6 +4,8 @@ const authController = require('../controllers/authController')
 const authLoginValidator = require('../validators/auth/authLoginValidator')
 const authentification = require('../middlewares/auth/authentificationMiddleware')
 const roleAuthorization = require('../middlewares/auth/roleAuthMiddleware')
+const updateProfileValidator = require('../validators/user/updateProfileValidator');
+const userController = require('../controllers/userContoller');
 
 const authRouter = require('express').Router();
 
@@ -20,6 +22,12 @@ authRouter.post('/login',
 authRouter.get('/me',
     authentification(),
     authController.me
+)
+
+authRouter.patch('/me',
+    bodyValidator(updateProfileValidator),
+    authentification(),
+    userController.updateProfile
 )
 
 //NB: test route for 'roleAuthorization' Admin
