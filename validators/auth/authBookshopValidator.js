@@ -49,4 +49,5 @@ const authBookshopValidator = z.object({
     path: ["confirmPassword"]
 });
 
+
 module.exports = authBookshopValidator;
