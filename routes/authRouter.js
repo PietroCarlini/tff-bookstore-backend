@@ -6,12 +6,18 @@ const authentification = require('../middlewares/auth/authentificationMiddleware
 const roleAuthorization = require('../middlewares/auth/roleAuthMiddleware')
 const updateProfileValidator = require('../validators/user/updateProfileValidator');
 const userController = require('../controllers/userContoller');
+const authBookshopValidator = require ('../validators/auth/authBookshopValidator')
 
 const authRouter = require('express').Router();
 
 authRouter.post('/register',
     bodyValidator(authUserValidator),
     authController.register
+)
+
+authRouter.post('/register-bookshop',
+    bodyValidator(authBookshopValidator),
+    authController.registerBookshop
 )
 
 authRouter.post('/login',

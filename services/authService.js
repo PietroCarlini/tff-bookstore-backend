@@ -31,6 +31,32 @@ const authService = {
         }
     },
 
+    registerBookshop: async (bookshopToAdd) => {
+
+        const t = await db.sequelize.transaction();
+
+        try {
+            const user = await db.User.create(bookshopToAdd, { transaction: t });
+            //NB: bookshop has an FK linked to User.id => We create a new Object linking User params to Bookshop and adding user_id
+            const bookshopData = {
+                name: bookshopToAdd.name,
+                city: bookshopToAdd.city,
+                address: bookshopToAdd.address,
+                email: bookshopToAdd.email,
+                phone: bookshopToAdd.phone,
+                userId: user.id
+            };
+            const bookshop = await db.Bookshop.create(bookshopData, { transaction: t });
+
+            await t.commit();
+            return { user, bookshop }
+        }
+        catch (err) {
+            await t.rollback();
+            throw new Error(err.message)
+        }
+    },
+
     authEmailCheck: async (email) => {
         try {
             const existingEmail = await db.User.findOne({ where: { email } });
@@ -49,8 +75,9 @@ const authService = {
         try {
             const userFound = await db.User.findOne({
                 where: { email },
-                include: db.Client //To retrieve the connected client (so you can access the data)
-                //?This works because it's defined the User.hasOne(Client, ...) association in models/config.js => Sequelize uses that relationship to JOIN behind the scenes
+                include: [db.Client, db.Bookshop] //To retrieve the connected client (so you can access the data)
+                //?This works because it's defined the User.hasOne(Client, ...) association in models/config.js => Sequelize uses that relationship to JOIN behind the scenes  
+                //! the [db.Client, db.Bookshop] allows to recive (ex. Bookshop): user bookshop: userFound.client = null, userFound.bookshop = {...} -> because it's not a client (null) and we retrive data from bookshop user
             });
             return userFound;
         }

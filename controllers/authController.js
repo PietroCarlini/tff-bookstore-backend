@@ -33,6 +33,36 @@ const authController = {
         }
     },
 
+    registerBookshop: async (req, res) => {
+        try {
+            //Cutting off confirmedPassword (from validator)
+            const { confirmPassword, ...bookshopToAdd } = req.data;
+
+            //!hashing PW
+            const passwordToHash = await argon2.hash(bookshopToAdd.password);
+            bookshopToAdd.password = passwordToHash;
+
+            if (await authService.authEmailCheck(bookshopToAdd.email)) {
+                res.status(409).json({ message: 'CONFLICT: chosen email already exist' })
+            }
+            else {
+                const bookshopAdded = await authService.registerBookshop(bookshopToAdd);
+                //NB: bookshopAdded = {user,bookshop}
+                const { user, bookshop } = bookshopAdded;
+                //! DESTRUCTURING to hide password
+                const { password, ...userNoPW } = user.toJSON();
+
+                res.location(`/auth/` + user.id);
+                res.status(201).json({ userNoPW, bookshop })
+            }
+        }
+        catch (err) {
+            res.status(500).json({ status: 500, message: 'A server error has occured' })
+            console.log(err);
+
+        }
+    },
+
     login: async (req, res) => {
         try {
             const { email, password } = req.data;
@@ -49,12 +79,17 @@ const authController = {
                 //if email and pw ok => token generated
                 const token = await jwtUtils.generate(userFound);
 
+                 //NB: a User has either a client or a bookshop linked, never both
+                const type = userFound.client ? 'client' : 'bookshop';
+                const name = userFound.client ? userFound.client.firstname : userFound.bookshop.name;
+
                 res.status(200).json({
                     token: token,
                     user: {
                         id: userFound.id,
-                        firstname: userFound.client.firstname,
-                        role: userFound.role
+                        firstname: name,
+                        role: userFound.role,
+                        type: type
                     }
                 })
             }
