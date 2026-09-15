@@ -1,4 +1,4 @@
-const orderService = require('../../services/order/orderService');
+const orderService = require('../../services/orderService');
 
 const orderController = {
     create: async (req, res) => {
@@ -12,7 +12,32 @@ const orderController = {
             res.status(500).json({ status: 500, message: 'A server error has occured' });
             console.log(err);
         }
-    }
+    },
+
+    getMine: async (req, res) => {
+        try{
+            const clientId = req.client.id;
+            const orders = await orderService.getAllByClient(clientId);
+            res.status(200).json({ orders })
+        }
+        catch (err) {
+            res.status(500).json({ status: 500, message: 'A server error has occured' });
+            console.log(err);
+        }
+    },
+
+    getBookshopOrders: async (req, res) => {
+        try {
+            const bookshopId = req.bookshop.id;
+            const orders = await orderService.getAllByBookshop(bookshopId);
+            res.status(200).json({ orders });
+        }
+        catch (err) {
+            res.status(500).json({ status: 500, message: 'A server error has occured' });
+            console.log(err);
+        }
+    },
+
 }
 
 module.exports = orderController;
