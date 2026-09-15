@@ -29,7 +29,11 @@ const orderItemBuilder = (sequelize) => {
             },
             price: {
                 type: DataTypes.DECIMAL(10,2),
-                allowNull: false,
+                allowNull: true,
+            },
+            cover_url: {
+                type: DataTypes.STRING(2000),
+                allowNull: true
             },
         },
         {

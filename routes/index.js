@@ -8,7 +8,7 @@ router.use('/auth', authRouter);
 const bookStockedRouter = require('./bookStockedRouter');
 router.use('/catalogue', bookStockedRouter)
 
-
-
+const orderRouter = require('./orderRouter');
+router.use('/orders', orderRouter)
 
 module.exports = router;
