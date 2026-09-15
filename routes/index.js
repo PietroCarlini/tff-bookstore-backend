@@ -5,7 +5,8 @@ const router = express.Router();
 const authRouter = require('./authRouter');
 router.use('/auth', authRouter);
 
-
+const bookStockedRouter = require('./bookStockedRouter');
+router.use('/catalogue', bookStockedRouter)
 
 
 

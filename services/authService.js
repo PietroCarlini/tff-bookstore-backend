@@ -88,8 +88,9 @@ const authService = {
 
     getById: async (id) => {
         try {
+            //*findByPk search only in User table a matching ID. Once found, it looks a matching id(FK:user_Id) in Client or Bookshop tables thanks to "include"
             const userFound = await db.User.findByPk(id, {
-                include: db.Client
+                include: [db.Client, db.Bookshop]
             });
             return userFound
         }
