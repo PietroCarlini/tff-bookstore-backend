@@ -12,6 +12,9 @@ const orderRouter = require('./orderRouter');
 router.use('/orders', orderRouter)
 
 const wishlistRouter = require('./wishlistRouter');
-router.use('/wishlist', wishlistRouter)
+router.use('/toread', wishlistRouter)
+
+const bookTrackingRouter = require('./bookTrackingRouter');
+router.use('/read', bookTrackingRouter)
 
 module.exports = router;
