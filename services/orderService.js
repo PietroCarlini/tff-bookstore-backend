@@ -52,6 +52,20 @@ const orderService = {
         catch(err) {
             throw new Error(err.message);
         }
+    },
+
+    update: async (id, bookshopId, dataToUpdate) => {
+        try{
+            const order = await db.Order.findOne({where:{id, bookshopId}})
+            if(!order){
+                return null;
+            }
+            await order.update(dataToUpdate);
+            return order
+        }
+        catch (err) {
+            throw new Error(err.message)
+        }
     }
 }
 

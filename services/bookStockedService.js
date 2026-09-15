@@ -72,7 +72,7 @@ const bookStockedService = {
     update: async (id, bookshopId, dataToUpdate) => {
         try{
             //Find right book in right bookshop
-            const book = await db.BookStocked.findOne({where: {id,bookshopId}});
+            const book = await db.BookStocked.findOne({where: {id, bookshopId}});
             // if not found = null (404 error)
             if(!book) {
                 return null;

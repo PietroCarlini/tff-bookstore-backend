@@ -60,7 +60,7 @@ const bookStockedController = {
         try{
             const bookshopId = req.bookshop.id;
             const { id } = req.params;
-            const dataToUpdate = req.data
+            const dataToUpdate = req.data;
             const book = await bookStockedService.update(id, bookshopId, dataToUpdate);
             if(!book){
                 return res.status(404).json({ status: 404, message: 'Book not found' })

@@ -38,6 +38,23 @@ const orderController = {
         }
     },
 
+    update: async (req, res) => {
+        try{
+            const bookshopId = req.bookshop.id;
+            const { id } = req.params;
+            const dataToUpdate = req.data;
+            const order = await orderService.update(id, bookshopId, dataToUpdate);
+            if(!order){
+                return res.status(404).json({ status: 404, message: 'Order not found' })
+            }
+            res.status(200).json({ order })
+        }
+        catch(err){
+            res.status(500).json({ status: 500, message: 'A server error has occured' })
+            console.log(err);
+        }
+    }
+
 }
 
 module.exports = orderController;

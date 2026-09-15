@@ -2,8 +2,9 @@ const authentification = require('../middlewares/auth/authentificationMiddleware
 const requireClient = require('../middlewares/auth/requireClientMiddleware');
 const requireBookshop = require('../middlewares/auth/requireBookshopMiddleware');
 const bodyValidator = require('../middlewares/bodyValidatorMiddleware');
-const orderValidator = require('../validators/orders/orderValidator');
+const orderValidator = require('../validators/order/orderValidator');
 const orderController = require('../controllers/order/orderController');
+const orderUpdateValidator = require('../validators/order/orderUpdateValidator')
 
 
 const orderRouter = require('express').Router();
@@ -30,6 +31,13 @@ orderRouter.get('/bookshop',
     orderController.getBookshopOrders
 )
 
+// PATCH /api/orders/:id -> update order state and/or price
+orderRouter.patch('/:id',
+    authentification(),
+    requireBookshop(),
+    bodyValidator(orderUpdateValidator),
+    orderController.update
+)
 
 
 module.exports = orderRouter;
