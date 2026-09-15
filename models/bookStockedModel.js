@@ -3,16 +3,16 @@
  * @param { Sequelize } sequelize 
  */
 
-const {DataTypes} = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 const bookStockedBuilder = (sequelize) => {
-    const BookStocked = sequelize.define (
+    const BookStocked = sequelize.define(
         'bookStocked',
         {
             id: {
-                type : DataTypes.BIGINT,
-                primaryKey : true,
-                autoIncrement : true,
+                type: DataTypes.BIGINT,
+                primaryKey: true,
+                autoIncrement: true,
                 autoIncrementIdentity: true
             },
             ISBN: {
@@ -36,7 +36,7 @@ const bookStockedBuilder = (sequelize) => {
                 allowNull: true
             },
             price: {
-                type: DataTypes.DECIMAL(10,2),
+                type: DataTypes.DECIMAL(10, 2),
                 allowNull: false,
             },
             stock: {
@@ -45,6 +45,10 @@ const bookStockedBuilder = (sequelize) => {
             },
             cover_url: {
                 type: DataTypes.STRING(2000),
+                allowNull: true
+            },
+            tag: {
+                type: DataTypes.STRING(200),
                 allowNull: true
             },
         },
