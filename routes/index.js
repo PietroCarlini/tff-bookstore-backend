@@ -11,4 +11,7 @@ router.use('/catalogue', bookStockedRouter)
 const orderRouter = require('./orderRouter');
 router.use('/orders', orderRouter)
 
+const wishlistRouter = require('./wishlistRouter');
+router.use('/wishlist', wishlistRouter)
+
 module.exports = router;
