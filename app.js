@@ -22,8 +22,12 @@ db.sequelize.authenticate()
     });
 
 //----DB SYNCH---- //! Commented after use
+
 // db.sequelize.sync()
-//     .catch(err => console.log(err))
+//     .catch(err => console.log(err)) //? vanilla (First use) + add new tables
+
+db.sequelize.sync({ alter: true })
+    .catch(err => console.log(err)) //? to modify exisiting tables
 
 //db.sequelize.sync({force : true}) //? ⚠️ to delete and redo DB
 

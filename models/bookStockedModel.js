@@ -31,6 +31,10 @@ const bookStockedBuilder = (sequelize) => {
                 type: DataTypes.STRING(100),
                 allowNull: false
             },
+            publisher: {
+                type: DataTypes.STRING(200),
+                allowNull: true
+            },
             price: {
                 type: DataTypes.DECIMAL(10,2),
                 allowNull: false,

@@ -27,6 +27,10 @@ const bookshopBuilder = (sequelize) => {
                 type: DataTypes.STRING(120),
                 allowNull: false,
             },
+            openingHours: {
+                type: DataTypes.STRING(2000),
+                allowNull: true
+            },
             email: {
                 type: DataTypes.STRING(320),
                 allowNull: false
