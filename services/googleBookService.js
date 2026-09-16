@@ -23,6 +23,7 @@ const googleBookService = {
                         //we extract only ISBN13 (already there because of filter) rather than other type of ISBN
                         const isbn13 = item.volumeInfo.industryIdentifiers.find((isbn) => isbn.type === "ISBN_13")
                         return {
+                            id: item.id,
                             title: item.volumeInfo.title,
                             authors: item.volumeInfo.authors,
                             isbn: isbn13.identifier,
@@ -53,6 +54,7 @@ const googleBookService = {
                 return {
                     title: data.volumeInfo.title,
                     authors: data.volumeInfo.authors,
+                    publisher: data.volumeInfo.publisher,
                     pubDate: data.volumeInfo.publishedDate,
                     isbn: isbn13.identifier,
                     cover: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : null,
