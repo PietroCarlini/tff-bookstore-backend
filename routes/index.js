@@ -17,4 +17,7 @@ router.use('/toread', wishlistRouter)
 const bookTrackingRouter = require('./bookTrackingRouter');
 router.use('/read', bookTrackingRouter)
 
+const bookshopRouter = require('./bookshopRouter');
+router.use('/bookshops', bookshopRouter)
+
 module.exports = router;
