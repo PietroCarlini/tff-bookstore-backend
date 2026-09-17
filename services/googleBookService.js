@@ -11,7 +11,8 @@ const googleBookService = {
             if (res.status === 200) {
                 const data = await res.json();
 
-                const filtered = data.items
+                const filtered = (data.items ?? []) //*If `data.items` is undefined or null, use `[]` instead = `.filter()` will still work on an (empty) array instead of failing.
+                
                     // filtering items that contains 1) .industryIdentifiers 2)if there, we filter again(.some) only the items that has ISBN_13
                     .filter((item) => {
 
@@ -52,6 +53,7 @@ const googleBookService = {
                 const isbn13 = data.volumeInfo.industryIdentifiers.find((isbn) => isbn.type === "ISBN_13")
 
                 return {
+                    id: data.id,
                     title: data.volumeInfo.title,
                     authors: data.volumeInfo.authors,
                     publisher: data.volumeInfo.publisher,
