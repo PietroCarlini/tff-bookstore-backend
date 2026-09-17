@@ -11,8 +11,8 @@ const googleBookService = {
             if (res.status === 200) {
                 const data = await res.json();
 
-                const filtered = (data.items ?? []) //*If `data.items` is undefined or null, use `[]` instead = `.filter()` will still work on an (empty) array instead of failing.
-                
+                const filtered = (data.items ?? []) //*If data.items is undefined or null, use `[]` instead = `.filter()` will still work on an (empty) array instead of failing.
+
                     // filtering items that contains 1) .industryIdentifiers 2)if there, we filter again(.some) only the items that has ISBN_13
                     .filter((item) => {
 
@@ -28,7 +28,7 @@ const googleBookService = {
                             title: item.volumeInfo.title,
                             authors: item.volumeInfo.authors,
                             isbn: isbn13.identifier,
-                            cover: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : null
+                            cover: item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail.replace("http://", "https://") : null
                         }
                     });
 
@@ -59,8 +59,8 @@ const googleBookService = {
                     publisher: data.volumeInfo.publisher,
                     pubDate: data.volumeInfo.publishedDate,
                     isbn: isbn13.identifier,
-                    cover: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : null,
-                    description: data.volumeInfo.description
+                    description: data.volumeInfo.description,
+                    cover: data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail.replace("http://", "https://") : null
                 }
             }
             if (res.status === 400) {
@@ -73,4 +73,4 @@ const googleBookService = {
     }
 }
 
-module.exports= googleBookService;
+module.exports = googleBookService;
