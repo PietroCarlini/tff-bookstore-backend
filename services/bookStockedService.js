@@ -26,7 +26,8 @@ const bookStockedService = {
                     //TODO3) Op.iLke: postgreSQL, case-insensitive
                     { title: { [Op.iLike]: `%${search}%` } },
                     { author: { [Op.iLike]: `%${search}%` } },
-                    { ISBN: { [Op.iLike]: `%${search}%` } }
+                    { ISBN: { [Op.iLike]: `%${search}%` } },
+                    { tag: { [Op.iLike]: `%${search}%` } },
                 ]
             }
             //TODO4) Obj with all results from search, that we find ina specific booksop
