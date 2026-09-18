@@ -2,6 +2,8 @@ const db = require('../models/config');
 const authService = require('./authService')
 const { Op } = require('sequelize');
 
+const SORTABLE_FIELDS = ['title', 'author', 'publisher', 'createdAt', 'updatedAt'];
+
 
 const bookStockedService = {
 
@@ -15,7 +17,7 @@ const bookStockedService = {
         }
     },
 
-    getAllByBookshop: async (bookshopId, search) => {
+    getAllByBookshop: async (bookshopId, search, sortBy, sortDir) => {
         try {
             //TODO1) We chose a Bookshop ('where')
             const bookshop = { bookshopId }
@@ -30,31 +32,39 @@ const bookStockedService = {
                     { tag: { [Op.iLike]: `%${search}%` } },
                 ]
             }
-            //TODO4) Obj with all results from search, that we find ina specific booksop
-            const books = await db.BookStocked.findAll({ where: bookshop });
+
+            // only apply an explicit order if sortBy is a field in sortable_fields
+            const order = SORTABLE_FIELDS.includes(sortBy)
+                ? [[sortBy, sortDir === 'DESC' ? 'DESC' : 'ASC']]
+                : undefined;
+
+
+            //TODO4) Obj with all results from search, that we find ina specific booksop 
+            //+ order for filter
+            const books = await db.BookStocked.findAll({ where: bookshop, order });
 
             //TODO5) NB: 'inOrder' is not a DB column, it's computed here: for each book, count OrderItem rows linked to it whose Order is not yet Collected/Canceled
 
             //Promise.all:  we wait all Promise to be returned; 
             const booksWithInOrder = await Promise.all(books.map
-            //books.map (async (book)): foe each book in books there's a query
-            (async (book) => {
-                //db.orderItem.count: count how many order (not 'collected' or 'cancelled') of that book
-                const inOrder = await db.OrderItem.count({
-                    where: {bookStockedId: book.id},
-                    include: {
-                        model: db.Order,
-                        where: {state: { [Op.notIn]: ['Collected', 'Canceled']}}
-                    }
-                });
-                //Return ammount book + ammount inOrder
-                return {...book.toJSON(), inOrder };
-            }));
-            
+                //books.map (async (book)): foe each book in books there's a query
+                (async (book) => {
+                    //db.orderItem.count: count how many order (not 'collected' or 'cancelled') of that book
+                    const inOrder = await db.OrderItem.count({
+                        where: { bookStockedId: book.id },
+                        include: {
+                            model: db.Order,
+                            where: { state: { [Op.notIn]: ['Collected', 'Canceled'] } }
+                        }
+                    });
+                    //Return ammount book + ammount inOrder
+                    return { ...book.toJSON(), inOrder };
+                }));
+
             //return same list + number of copy in order for each book
             return booksWithInOrder;
         }
-        catch(err){
+        catch (err) {
             throw new Error(err.message);
         }
     },
@@ -62,20 +72,20 @@ const bookStockedService = {
     //to find a specific book(id) in a specific bookshop(bookshopId)
     getByIdScoped: async (id, bookshopId) => {
         try {
-            const book = await db.BookStocked.findOne({where: { id, bookshopId}});
+            const book = await db.BookStocked.findOne({ where: { id, bookshopId } });
             return book;
         }
-        catch(err){
+        catch (err) {
             throw new Error(err.message)
         }
     },
 
     update: async (id, bookshopId, dataToUpdate) => {
-        try{
+        try {
             //Find right book in right bookshop
-            const book = await db.BookStocked.findOne({where: {id, bookshopId}});
+            const book = await db.BookStocked.findOne({ where: { id, bookshopId } });
             // if not found = null (404 error)
-            if(!book) {
+            if (!book) {
                 return null;
             }
             //if found update(sequalize method) with dataToUpdate
@@ -89,16 +99,16 @@ const bookStockedService = {
 
     remove: async (id, bookshopId) => {
         try {
-            const book = await db.BookStocked.findOne({ where: { id, bookshopId} });
-            if(!book) {
+            const book = await db.BookStocked.findOne({ where: { id, bookshopId } });
+            if (!book) {
                 return null;
             }
             //sequalize method to canceled db row
             await book.destroy();
             return book;
         }
-        catch(err){
-            throw new Error (err.message)
+        catch (err) {
+            throw new Error(err.message)
         }
     }
 }

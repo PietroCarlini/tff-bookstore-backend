@@ -25,8 +25,10 @@ const bookStockedController = {
             //req.query.search: retrieves the ?search=... parameter from the URL query string ( GET /api/catalogue?search=harry), unlike req.body/req.data, which instead read the request body. 
             // NB: If `search` is not present in the URL, `req.query.search` is simply undefined, and the service already handles that case with the `if (search)` statement in bookStockedService.
             const search = req.query.search;
+            const sortBy = req.query.sortBy;
+            const sortDir = req.query.sortDir;
 
-            const books = await bookStockedService.getAllByBookshop(bookshopId, search);
+            const books = await bookStockedService.getAllByBookshop(bookshopId, search, sortBy, sortDir);
 
             res.status(200).json({ books })
         }
