@@ -1,4 +1,5 @@
 const db = require('../models/config');
+const { Op } = require('sequelize');
 
 const orderService = {
 
@@ -41,11 +42,26 @@ const orderService = {
         }
     },
 
-    getAllByBookshop: async (bookshopId) => {
+    getAllByBookshop: async (bookshopId, search) => {
         try {
+            const where = {bookshopId}
+            
+            // if a search term is provided, filter by client (email/name) or book (ISBN/title/author), case-insensitive
+            if (search) {
+            where[Op.or] = [
+                // '$table.column$' = syntax to filter on a column of an included (joined) table
+                { '$client.email$': { [Op.iLike]: `%${search}%` } },
+                { '$client.firstname$': { [Op.iLike]: `%${search}%` } },
+                { '$client.lastname$': { [Op.iLike]: `%${search}%` } },
+                { '$orderItems.ISBN$': { [Op.iLike]: `%${search}%` } },
+                { '$orderItems.title$': { [Op.iLike]: `%${search}%` } },
+                { '$orderItems.author$': { [Op.iLike]: `%${search}%` } },
+            ];
+        }
             const orders = await db.Order.findAll({
-                where: { bookshopId },
-                include: [db.OrderItem, db.Client]
+                where,
+                include: [db.OrderItem, db.Client],
+                order: [['createdAt', 'DESC']] // newest first, and a stable order after every PATCH
             })
             return orders;
         }

@@ -29,7 +29,8 @@ const orderController = {
     getBookshopOrders: async (req, res) => {
         try {
             const bookshopId = req.bookshop.id;
-            const orders = await orderService.getAllByBookshop(bookshopId);
+            const search = req.query.search; //* ?search=... from the URL, undefined if missing
+            const orders = await orderService.getAllByBookshop(bookshopId, search);
             res.status(200).json({ orders });
         }
         catch (err) {
