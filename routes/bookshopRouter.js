@@ -1,4 +1,5 @@
 const authentification = require('../middlewares/auth/authentificationMiddleware');
+const requireBookshop = require('../middlewares/auth/requireBookshopMiddleware');
 const bookshopController = require('../controllers/bookshopController');
 
 const bookshopRouter = require('express').Router();
@@ -7,6 +8,13 @@ const bookshopRouter = require('express').Router();
 bookshopRouter.get('/',
     authentification(),
     bookshopController.getAll
+);
+
+// GET /api/bookshops/me -> data of the logged-in bookshop (bookshop role only)
+bookshopRouter.get('/me',
+    authentification(),
+    requireBookshop(),
+    bookshopController.getBookshopDetails
 );
 
 module.exports = bookshopRouter;
