@@ -4,19 +4,23 @@ const googleBookService = {
 
     searchBooks: async (query) => {
         try {
-            const url = `https://www.googleapis.com/books/v1/volumes?q=${query}&key=${GOOGLE_BOOKS_API_KEY}`
+            //url to search books: langRestriction + parsing query to prevent error during search 
+            const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&langRestrict=en&maxResults=20&key=${GOOGLE_BOOKS_API_KEY}`
+            
 
             const res = await fetch(url);
             console.log(res.status);
             if (res.status === 200) {
                 const data = await res.json();
+                // console.log("LANGUAGES for:", query, (data.items ?? []).map((item) => `${item.volumeInfo.language} - ${item.volumeInfo.title}`));
 
                 const filtered = (data.items ?? []) //*If data.items is undefined or null, use `[]` instead = `.filter()` will still work on an (empty) array instead of failing.
 
-                    // filtering items that contains 1) .industryIdentifiers 2)if there, we filter again(.some) only the items that has ISBN_13
+                    // filtering items that contains 1) .industryIdentifiers 2)if there, we filter again(.some) only the items that has ISBN_13 3)leng=en
                     .filter((item) => {
 
-                        return item.volumeInfo.industryIdentifiers &&
+                        return item.volumeInfo.language === "en" &&
+                            item.volumeInfo.industryIdentifiers &&
                             item.volumeInfo.industryIdentifiers.some((isbn) => isbn.type === "ISBN_13")
                     })
                     //filtering new array from .filter() chossing which data to show: 
