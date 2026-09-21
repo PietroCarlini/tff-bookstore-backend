@@ -3,9 +3,13 @@ const db = require('../models/config');
 const wishlistService = {
 
     add: async (clientId, bookToAdd) => {
-        try{
-            const book = await db.Wishlist.create({...bookToAdd, clientId });
-                return book;
+        try {
+            // findOrCreate: if the client already has this book in "to read", it is not added again
+            const [book] = await db.Wishlist.findOrCreate({
+                where: { ISBN: bookToAdd.ISBN, clientId },
+                defaults: { ...bookToAdd, clientId },
+            });
+            return book;
         }
         catch (err) {
             throw new Error(err.message);
@@ -22,16 +26,16 @@ const wishlistService = {
         }
     },
 
+    // removes every row of this book for this client (it also cleans any duplicate already in the database)
     remove: async (ISBN, clientId) => {
         try {
-            const book = await db.Wishlist.findOne({ where: {ISBN, clientId}});
-            if(!book){
+            const deleted = await db.Wishlist.destroy({ where: { ISBN, clientId } });
+            if (deleted === 0) {
                 return null
             }
-            await book.destroy();
-            return book;
+            return { ISBN };
         }
-        catch(err){
+        catch (err) {
             throw new Error(err.message)
         }
     }
