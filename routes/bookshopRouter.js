@@ -1,5 +1,7 @@
 const authentification = require('../middlewares/auth/authentificationMiddleware');
 const requireBookshop = require('../middlewares/auth/requireBookshopMiddleware');
+const bodyValidator = require('../middlewares/bodyValidatorMiddleware');
+const updateBookshopValidator = require('../validators/bookshop/updateBookshopValidator');
 const bookshopController = require('../controllers/bookshopController');
 
 const bookshopRouter = require('express').Router();
@@ -15,6 +17,14 @@ bookshopRouter.get('/me',
     authentification(),
     requireBookshop(),
     bookshopController.getBookshopDetails
+);
+
+// PATCH /api/bookshops/me -> the logged-in bookshop updates its own data (bookshop role only)
+bookshopRouter.patch('/me',
+    authentification(),
+    requireBookshop(),
+    bodyValidator(updateBookshopValidator),
+    bookshopController.updateBookshop
 );
 
 module.exports = bookshopRouter;
