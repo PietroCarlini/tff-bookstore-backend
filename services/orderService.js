@@ -71,18 +71,31 @@ const orderService = {
     },
 
     update: async (id, bookshopId, dataToUpdate) => {
-        try{
-            const order = await db.Order.findOne({where:{id, bookshopId}})
-            if(!order){
-                return null;
-            }
-            await order.update(dataToUpdate);
-            return order
+    const { state, price } = dataToUpdate;
+
+    try {
+        const order = await db.Order.findOne({
+            where: { id, bookshopId },
+            include: [db.OrderItem], // needed to update the item's price
+        });
+        if (!order) return null;
+
+        // state belongs to Order
+        if (state !== undefined) {
+            await order.update({ state });
         }
-        catch (err) {
-            throw new Error(err.message)
+
+        // price belongs to OrderItem, not Order: it must be updated on that table
+        if (price !== undefined && order.orderItems?.[0]) {
+            await order.orderItems[0].update({ price });
         }
+
+        return order;
     }
+    catch (err) {
+        throw new Error(err.message);
+    }
+}
 }
 
 module.exports = orderService;
